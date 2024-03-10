@@ -12,13 +12,13 @@ spec:
             - name: DBPORT
               value: "3306"
             - name: DBUSER
-              value: root
+              value: "root"
             - name: DATABASE
-              value: employees
+              value: "employees"
             - name: DBPWD
-              value: pw
+              value: "pw"
             - name: APP_COLOR
-              value: blue
+              value: "blue"
               
       ports:
         - containerPort: 8080
