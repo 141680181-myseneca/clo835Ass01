@@ -8,9 +8,9 @@ spec:
       image: 544378344870.dkr.ecr.us-east-1.amazonaws.com/clo835-week4:app
       env:
             - name: DBHOST
-              value: 172.17.0.2
+              value: "172.17.0.2"
             - name: DBPORT
-              value: 3306
+              value: "3306"
             - name: DBUSER
               value: root
             - name: DATABASE
