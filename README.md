@@ -3,7 +3,7 @@
 Assignment2: Create K8s cluster, deploy containerized stateless applications using K8s manifests, expose the applications as NodePort services, roll out an updated version of the application
 
 1.	Verify K8s is running by using following commands:
-Scp -i week5 *.* <ip address>:/tmp
+scp -i week5 *.* 35.153.156.152:/tmp
 Setup user data for creating K8s in the ec2, which has 30 GB and is of t3.medium type.
  ```bash
  #!/bin/bash
@@ -21,7 +21,7 @@ rm -f ./kubectl
 kind create cluster --config kind.yaml
 yum install mysql
 
-k get nodesd
+k get nodes
 k get all -A
 
  ```
@@ -46,8 +46,33 @@ export ECR=544378344870.dkr.ecr.us-east-1.amazonaws.com/clo835-week4
 aws ecr get-login-password --region us-east-1 | docker login -u AWS ${ECR} --password-stdin
 docker pull  544378344870.dkr.ecr.us-east-1.amazonaws.com/clo835-week4:app
 docker pull  544378344870.dkr.ecr.us-east-1.amazonaws.com/clo835-week4:mysql
+k apply -f mysecret.yaml -n mydb
+k apply -f mysecret.yaml -n myapp
+k apply -f mysql_pod_manif.yaml -n mydb
 
 ```
 
 
 
+then we need to check it for future usage by running:
+```bash
+k describe pod mysqlpod -n mydb
+```
+I got the mysql’s ip : 10.244.0.19, and then modify webapp_pod_manif.yaml accordingly.
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  6s    default-scheduler  Successfully assigned mydb/mysqlpod to kind-control-plane
+  Normal  Pulled     5s    kubelet            Container image "544378344870.dkr.ecr.us-east-1.amazonaws.com/clo835-week4:mysql" already present on machine
+  Normal  Created    5s    kubelet            Created container mysql-container
+  Normal  Started    5s    kubelet            Started container mysql-container
+To check the database working:
+```bash
+k exec -it mysqlpod -n mydb -c mysql-container -- /bin/bash
+mysql -u root -p 
+use employees
+```
+apply app pod yaml:
+```bash
+k apply -f webapp_pod_manif.yaml -n myapp
+```

@@ -3,7 +3,7 @@ kind: ReplicaSet
 metadata:
   name: mysql-replicaset
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: mysql
@@ -17,6 +17,11 @@ spec:
           image: 544378344870.dkr.ecr.us-east-1.amazonaws.com/clo835-week4:mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: your_root_password_here
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
           ports:
             - containerPort: 3306
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always  
