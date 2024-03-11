@@ -137,3 +137,41 @@ myapp-replicaset-fm5bb   1/1     Running   0          42m
 3.a.
 Is the replicaset created in step 3 part of this deployment?
 Answer:
+Run:
+k get rs -n mydb  
+k get rs -n myapp
+there should be 2 sets of replicasets per command, so they are different.
+
+
+4.
+k apply -f webapp_service_nodeport.yaml 
+curl 35.153.156.152:30000   
+35.153.156.152 is my EC2’s public IP
+
+
+error message:
+$ k apply -f webapp_service_nodeport.yaml 
+error: error when creating "webapp_service_nodeport.yaml":
+Post "https://127.0.0.1:40277/api/v1/namespaces/myapp
+/services?fieldManager=kubectl-client-side-apply&fieldValidation=Strict":
+net/http: TLS handshake timeout
+
+
+k apply -f mydb_service_clusterip.yaml -n mydb
+
+5.
+N/A
+
+6. Explain the reason we are using different service types for the
+web and MySQL applications 
+
+Answer:
+
+ClusterIP type for Database is good for safety by using inside the cluster, 
+and it is a stable IP. It can reduce the risks and threats from
+outside of the cluster.
+
+NodePort type for web app, is to connect all nodes in the cluster, and to 
+forward traffic to the service. It can be accessed from outside of the cluster, 
+a specific port can be pointed to expose the web app. It is good for HTTP / HTTPs 
+protocol usage.
