@@ -76,3 +76,64 @@ apply app pod yaml:
 ```bash
 k apply -f webapp_pod_manif.yaml -n myapp
 ```
+2.a. 
+Yes, they can because they are in separate pod, even if they are in same pod, still have ways to listen on same port but more troublesome.
+2.b. 
+k exec -it myapp-pod -n myapp -c myappcontainer -- /bin/bash
+apt-get update
+apt-get install curl
+check dockerfile for the port number to curl:
+curl http://localhost:8080 
+
+Open another terminal:
+
+export ECR=544378344870.dkr.ecr.us-east-1.amazonaws.com/clo835-week4
+
+aws ecr get-login-password --region us-east-1 | docker login -u AWS ${ECR} --password-stdin
+2.c.
+k logs myapp-pod -n myapp -f
+2.d.
+
+k apply -f mysql_replica_manif.yaml --validate=false -n mydb
+k get rs -n mydb
+
+NAME               DESIRED   CURRENT   READY   AGE
+mysql-replicaset   3         3         3       3m43s
+
+Explain:
+No, it is not. ReplicaSet is not the same object as that pod of step 2. 
+
+
+k apply -f webapp_replica_manif.yaml --validate=false -n myapp
+k get rs -n myapp
+NAME               DESIRED   CURRENT   READY   AGE
+myapp-replicaset   3         3         3       72s
+
+3. Deployments:
+k apply -f mysql_deployment_manif.yaml -n mydb
+k get deployment -n mydb
+k get pods -n mydb
+
+NAME                     READY   STATUS    RESTARTS   AGE
+mysql-replicaset-6mm2r   1/1     Running   0          78m
+mysql-replicaset-7xsnl   1/1     Running   0          78m
+mysql-replicaset-cb8mb   1/1     Running   0          78m
+mysqlpod                 1/1     Running   0          3h34m
+
+
+k apply -f webapp_deployment_manif.yaml -n myapp
+k get deployment -n myapp
+
+k get pods -n myapp
+
+NAME                     READY   STATUS    RESTARTS   AGE
+myapp-pod                1/1     Running   0          169m
+myapp-replicaset-2vn9q   1/1     Running   0          42m
+myapp-replicaset-dxswx   1/1     Running   0          42m
+myapp-replicaset-fm5bb   1/1     Running   0          42m
+
+
+
+3.a.
+Is the replicaset created in step 3 part of this deployment?
+Answer:

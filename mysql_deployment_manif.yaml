@@ -2,8 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-deployment
+  namespace: mydb
+  labels:
+    app: mysql
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: mysql
@@ -13,10 +16,15 @@ spec:
         app: mysql
     spec:
       containers:
-        - name: mysql-container
+        - name: mysql-deployment-container
           image: 544378344870.dkr.ecr.us-east-1.amazonaws.com/clo835-week4:mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: your_root_password_here
+              valueFrom:
+                secretKeyRef:
+                  name: mydb-secret
+                  key: password
           ports:
             - containerPort: 3306
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always

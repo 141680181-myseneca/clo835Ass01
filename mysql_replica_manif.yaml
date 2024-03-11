@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
   name: mysql-replicaset
+  namespace: mydb
+  labels: 
+    app: mysql
 spec:
   replicas: 3
   selector:
@@ -19,9 +22,9 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-credentials
+                  name: mydb-secret
                   key: password
           ports:
             - containerPort: 3306
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always  
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always  

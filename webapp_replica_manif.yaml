@@ -37,17 +37,7 @@ spec:
                   key: password
             - name: APP_COLOR
               value: "blue"
-            ports:
-              - containerPort: 80
+          ports:
+            - containerPort: 80
           dnsPolicy: ClusterFirst
           restartPolicy: Always  
-          
-          
-          
-          
-          
-          
-          ports:
-            - containerPort: 8080
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
